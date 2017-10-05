@@ -1,0 +1,4 @@
+name: CEnchants
+version: 1.0.0-SNAPSHOT
+main: me.koenn.cenchants.CEnchants
+authors: [Koenn]
