@@ -66,14 +66,17 @@ public class JSONFile {
     }
 
     private void load() {
-        if (this.file.exists()) {
+        if (!this.file.exists()) {
             this.json = new JSONObject();
         } else {
             this.json = parseJSON(this.file);
         }
     }
 
-    private void save() {
+    /**
+     * Save the <code>JSONFile</code> to disk.
+     */
+    public void save() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         writeJSON(this.file, gson.toJson(new JsonParser().parse(this.json.toJSONString())));
     }
