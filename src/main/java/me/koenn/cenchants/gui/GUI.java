@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 
 /**
  * A class representing an in-game GUI for player interaction.
@@ -17,21 +17,16 @@ import java.util.LinkedList;
 public class GUI implements Listener {
 
     private final Inventory inventory;
-    private final LinkedList<Option> options;
+    private final HashMap<Integer, Option> options;
 
     private GUI(Builder builder) {
         this.inventory = Bukkit.createInventory(null, builder.size, builder.name);
-        this.options = new LinkedList<>();
+        this.options = new HashMap<>();
 
         for (Option option : builder.options.keySet()) {
             int index = builder.options.get(option);
-            if (index == -1) {
-                this.inventory.addItem(option.getIcon());
-                this.options.add(option);
-            } else {
-                this.inventory.setItem(index, option.getIcon());
-                this.options.set(index, option);
-            }
+            this.inventory.setItem(index, option.getIcon());
+            this.options.put(index, option);
         }
     }
 
@@ -49,7 +44,7 @@ public class GUI implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player) || !event.getClickedInventory().equals(this.inventory) || event.getCurrentItem() == null) {
+        if (!event.getClickedInventory().equals(this.inventory) || event.getCurrentItem() == null || !(event.getWhoClicked() instanceof Player)) {
             return;
         }
 
@@ -91,17 +86,6 @@ public class GUI implements Listener {
          */
         public Builder setSize(int size) {
             this.size = size;
-            return this;
-        }
-
-        /**
-         * Add an <code>Option</code> to the <code>GUI</code>
-         *
-         * @param option <code>Option</code> to add.
-         * @return <code>Builder</code> object for chaining calls.
-         */
-        public Builder addOption(Option option) {
-            this.options.put(option, -1);
             return this;
         }
 
